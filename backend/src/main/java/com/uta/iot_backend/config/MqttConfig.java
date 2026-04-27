@@ -27,8 +27,8 @@ public class MqttConfig {
         try {
             MqttClient client = new MqttClient(broker, clientId, new MemoryPersistence());
             MqttConnectionOptions options = new MqttConnectionOptions();
-            options.setAutomaticReconnect(true);
-            options.setCleanStart(true);
+            options.setCleanStart(false);           
+            options.setSessionExpiryInterval(3600L);
             options.setConnectionTimeout(10);
             client.connect(options);
             log.info("Conectado al broker MQTT: {}", broker);
