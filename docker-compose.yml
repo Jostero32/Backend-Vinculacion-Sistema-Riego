@@ -1,6 +1,20 @@
 version: "3.8"
 
 services:
+  backend:
+    build:
+      context: ./backend
+    container_name: iot-backend
+    ports:
+      - "8080:8080"
+    environment:
+      MQTT_BROKER_URL: tcp://mosquitto:1883
+      SPRING_MONGODB_URI: mongodb://root:secret@mongodb:27017/iot_db?authSource=admin
+    depends_on:
+      - mosquitto
+      - mongodb
+    restart: unless-stopped
+
   mosquitto:
     image: eclipse-mosquitto:2
     container_name: mosquitto
@@ -24,6 +38,7 @@ services:
       MONGO_INITDB_DATABASE: iot_db
     volumes:
       - mongo_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d:ro
     restart: unless-stopped
 
   mongo-express:
